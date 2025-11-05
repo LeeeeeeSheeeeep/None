@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberDrive - C-Powered Personal Cloud Drive</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- Header -->
+    <header>
+      <div class="logo-container">
+        <div class="logo-icon">💾</div>
+        <div>
+          <h1>CYBERDRIVE</h1>
+          <p class="subtitle">极轻量局域网个人云盘 (C 语言套接字驱动)</p>
+        </div>
+      </div>
+      <div class="header-info">
+        <div class="server-address" id="server-address-display">
+          <span>服务器端口: 8080</span>
+        </div>
+        <button id="btn-refresh" class="btn btn-icon" title="刷新文件列表">🔄 刷新</button>
+      </div>
+    </header>
+
+    <!-- Workspace Grid -->
+    <div class="workspace-grid">
+      
+      <!-- LEFT PANEL: Stats & Action -->
+      <aside class="panel stats-panel">
+        <div class="panel-header">
+          <h2><span>📊</span> 服务诊断与统计</h2>
+        </div>
+        <div class="panel-content">
+          <!-- Server health indicators -->
+          <div class="stat-card">
+            <span class="stat-label">服务器状态</span>
+            <div class="status-indicator-row">
+              <span class="status-dot active"></span>
+              <span class="status-text">局域网共享中...</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-label">文件总数</span>
+            <span id="stat-file-count" class="stat-val">0 个文件</span>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-label">存储占用状况</span>
+            <div class="progress-bar-container">
+              <div id="storage-progress" class="progress-fill" style="width: 0%;"></div>
+            </div>
+            <div class="progress-text">
+              <span id="stat-storage-size">已用: 0 Bytes</span>
+              <span>无容量限制</span>
+            </div>
+          </div>
+
+          <!-- Quick Action Buttons -->
+          <div class="action-buttons-group">
+            <button id="btn-trigger-upload" class="btn btn-primary btn-block">📤 选择文件并上传</button>
+            <input type="file" id="file-uploader" style="display: none;" multiple>
+          </div>
+        </div>
+      </aside>
+
+      <!-- RIGHT PANEL: File Explorer -->
+      <main class="panel explorer-panel">
+        <div class="panel-header">
+          <h2><span>📂</span> 文件存储管理器</h2>
+          <div class="search-box">
+            <input type="text" id="search-input" placeholder="输入名称检索文件...">
+          </div>
+        </div>
+        
+        <!-- Drag & Drop upload container -->
+        <div id="drop-zone" class="file-drop-area">
+          <div class="drop-icon">📁</div>
+          <div class="drop-text">
+            <h3>拖拽文件至此区域进行上传</h3>
+            <p>支持拖拽图片、视频、MP3音乐、代码以及任意格式的文档</p>
+          </div>
+          <div id="upload-progress-container" class="upload-progress-overlay">
+            <div class="spinner"></div>
+            <div class="progress-bar-container large">
+              <div id="upload-progress-fill" class="progress-fill active" style="width: 0%;"></div>
+            </div>
+            <p id="upload-progress-text">正在上传中... 0%</p>
+          </div>
+        </div>
+
+        <div class="panel-content">
+          <!-- Files Grid list -->
+          <div id="files-grid" class="files-grid">
+            <!-- Dynamically populated via app.js -->
+            <div class="empty-state">
+              <p>云盘当前为空，拖拽或选择文件上传，开启你的极速局域网传输之旅！</p>
+            </div>
+          </div>
+        </div>
+      </main>
+
+    </div>
+  </div>
+
+  <!-- LIGHTBOX: Image Preview Modal -->
+  <div id="lightbox-modal" class="modal">
+    <span class="modal-close" id="btn-close-lightbox">&times;</span>
+    <div class="modal-content">
+      <img id="lightbox-img" src="" alt="Image Preview">
+      <p id="lightbox-title" class="media-title"></p>
+    </div>
+  </div>
+
+  <!-- DRAWER: Media Player (Audio/Video) -->
+  <div id="media-drawer" class="media-drawer">
+    <div class="drawer-header">
+      <h3 id="media-drawer-title">正在播放: 无</h3>
+      <span class="drawer-close" id="btn-close-media">&times;</span>
+    </div>
+    <div class="drawer-body">
+      <!-- Video Element -->
+      <video id="media-video" controls style="display: none;"></video>
+      <!-- Audio Element -->
+      <audio id="media-audio" controls style="display: none;"></audio>
+    </div>
+  </div>
+
+  <!-- MODAL: Code & Text Editor -->
+  <div id="editor-modal" class="modal text-editor-modal">
+    <div class="modal-content editor-modal-content">
+      <div class="editor-header">
+        <h3 id="editor-filename">编辑文本文件</h3>
+        <div class="editor-actions">
+          <button id="btn-save-editor" class="btn btn-primary">💾 保存更改</button>
+          <button id="btn-close-editor" class="btn">关闭</button>
+        </div>
+      </div>
+      <div class="editor-body">
+        <textarea id="text-editor-textarea" spellcheck="false"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>

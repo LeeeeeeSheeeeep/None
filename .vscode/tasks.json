@@ -1,0 +1,50 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "编译 淳朴版 (Build Naive)",
+            "command": "d:\\c++\\mingw64\\bin\\gcc.exe",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "${workspaceFolder}\\test_naive.c",
+                "${workspaceFolder}\\contact_naive.c",
+                "-o",
+                "${workspaceFolder}\\test_naive.exe"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "type": "shell",
+            "label": "编译 高级版 (Build Advanced)",
+            "command": "d:\\c++\\mingw64\\bin\\gcc.exe",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "${workspaceFolder}\\test_advanced.c",
+                "${workspaceFolder}\\contact_advanced.c",
+                "-o",
+                "${workspaceFolder}\\test_advanced.exe"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build"
+            }
+        }
+    ]
+}

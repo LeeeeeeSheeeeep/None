@@ -1,0 +1,345 @@
+#define _CRT_SECURE_NO_WARNINGS 1
+
+#include "contact_naive.h"
+
+// 查找辅助函数: 根据名字查找联系人, 找到返回下标, 未找到返回 -1
+static int FindByName(const Contact* pc, const char* name)
+{
+    for (int i = 0; i < pc->sz; i++)
+    {
+        if (strcmp(pc->data[i].name, name) == 0)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+// 清空输入缓冲区: 防止用户输入的多余字符干扰下一次读取
+void ClearInputBuffer(void)
+{
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF)
+    {
+        ;
+    }
+}
+
+// 初始化通讯录
+void InitContact(Contact* pc)
+{
+    if (pc == NULL)
+    {
+        return;
+    }
+    pc->sz = 0;
+    memset(pc->data, 0, sizeof(pc->data));
+}
+
+// 增加联系人
+void AddContact(Contact* pc)
+{
+    if (pc == NULL)
+    {
+        return;
+    }
+
+    if (pc->sz == MAX)
+    {
+        printf("添加失败: 通讯录已满!\n");
+        return;
+    }
+
+    printf("请输入名字(最多19个字符): ");
+    if (scanf("%19s", pc->data[pc->sz].name) == EOF || feof(stdin))
+    {
+        printf("\n检测到输入结束，操作中止。\n");
+        return;
+    }
+    ClearInputBuffer();
+
+    printf("请输入年龄: ");
+    int res = 0;
+    while ((res = scanf("%d", &(pc->data[pc->sz].age))) != 1 || pc->data[pc->sz].age < 0)
+    {
+        if (res == EOF || feof(stdin))
+        {
+            printf("\n检测到输入结束，操作中止。\n");
+            return;
+        }
+        printf("输入无效! 请输入合法的年龄(大于等于0): ");
+        ClearInputBuffer();
+    }
+    ClearInputBuffer();
+
+    printf("请输入性别(最多9个字符): ");
+    if (scanf("%9s", pc->data[pc->sz].sex) == EOF || feof(stdin))
+    {
+        printf("\n检测到输入结束，操作中止。\n");
+        return;
+    }
+    ClearInputBuffer();
+
+    printf("请输入电话(最多14个字符): ");
+    if (scanf("%14s", pc->data[pc->sz].tele) == EOF || feof(stdin))
+    {
+        printf("\n检测到输入结束，操作中止。\n");
+        return;
+    }
+    ClearInputBuffer();
+
+    printf("请输入地址(最多29个字符): ");
+    if (scanf("%29s", pc->data[pc->sz].addr) == EOF || feof(stdin))
+    {
+        printf("\n检测到输入结束，操作中止。\n");
+        return;
+    }
+    ClearInputBuffer();
+
+    pc->sz++;
+    printf("--- 添加联系人成功 ---\n");
+}
+
+// 显示所有联系人
+void ShowContact(const Contact* pc)
+{
+    if (pc == NULL)
+    {
+        return;
+    }
+    if (pc->sz == 0)
+    {
+        printf("当前通讯录为空, 无联系人信息.\n");
+        return;
+    }
+
+    printf("\n=========================================================================\n");
+    printf("%-20s\t%-5s\t%-10s\t%-15s\t%-30s\n", "姓名", "年龄", "性别", "电话", "地址");
+    printf("-------------------------------------------------------------------------\n");
+    for (int i = 0; i < pc->sz; i++)
+    {
+        printf("%-20s\t%-5d\t%-10s\t%-15s\t%-30s\n", 
+               pc->data[i].name, 
+               pc->data[i].age, 
+               pc->data[i].sex, 
+               pc->data[i].tele, 
+               pc->data[i].addr);
+    }
+    printf("=========================================================================\n\n");
+}
+
+// 删除指定联系人
+void DelContact(Contact* pc)
+{
+    if (pc == NULL)
+    {
+        return;
+    }
+    if (pc->sz == 0)
+    {
+        printf("删除失败: 当前通讯录为空!\n");
+        return;
+    }
+
+    char name[MAX_NAME] = { 0 };
+    printf("请输入要删除的联系人姓名: ");
+    if (scanf("%19s", name) == EOF || feof(stdin))
+    {
+        printf("\n检测到输入结束，操作中止。\n");
+        return;
+    }
+    ClearInputBuffer();
+
+    int index = FindByName(pc, name);
+    if (index == -1)
+    {
+        printf("删除失败: 未找到该联系人.\n");
+        return;
+    }
+
+    for (int i = index; i < pc->sz - 1; i++)
+    {
+        pc->data[i] = pc->data[i + 1];
+    }
+
+    pc->sz--;
+    printf("--- 删除联系人成功 ---\n");
+}
+
+// 查找指定联系人并显示
+void SearchContact(const Contact* pc)
+{
+    if (pc == NULL)
+    {
+        return;
+    }
+    if (pc->sz == 0)
+    {
+        printf("通讯录为空!\n");
+        return;
+    }
+
+    char name[MAX_NAME] = { 0 };
+    printf("请输入要查找的联系人姓名: ");
+    if (scanf("%19s", name) == EOF || feof(stdin))
+    {
+        printf("\n检测到输入结束，操作中止。\n");
+        return;
+    }
+    ClearInputBuffer();
+
+    int index = FindByName(pc, name);
+    if (index == -1)
+    {
+        printf("未找到该联系人.\n");
+        return;
+    }
+
+    printf("\n--- 找到联系人信息 ---\n");
+    printf("%-20s\t%-5s\t%-10s\t%-15s\t%-30s\n", "姓名", "年龄", "性别", "电话", "地址");
+    printf("-------------------------------------------------------------------------\n");
+    printf("%-20s\t%-5d\t%-10s\t%-15s\t%-30s\n\n", 
+           pc->data[index].name, 
+           pc->data[index].age, 
+           pc->data[index].sex, 
+           pc->data[index].tele, 
+           pc->data[index].addr);
+}
+
+// 修改指定联系人信息
+void ModifyContact(Contact* pc)
+{
+    if (pc == NULL)
+    {
+        return;
+    }
+    if (pc->sz == 0)
+    {
+        printf("通讯录为空!\n");
+        return;
+    }
+
+    char name[MAX_NAME] = { 0 };
+    printf("请输入要修改的联系人姓名: ");
+    if (scanf("%19s", name) == EOF || feof(stdin))
+    {
+        printf("\n检测到输入结束，操作中止。\n");
+        return;
+    }
+    ClearInputBuffer();
+
+    int index = FindByName(pc, name);
+    if (index == -1)
+    {
+        printf("未找到该联系人.\n");
+        return;
+    }
+
+    printf("已找到该联系人, 请输入修改后的信息:\n");
+    printf("请输入新名字(最多19个字符): ");
+    if (scanf("%19s", pc->data[index].name) == EOF || feof(stdin))
+    {
+        printf("\n检测到输入结束，操作中止。\n");
+        return;
+    }
+    ClearInputBuffer();
+
+    printf("请输入新年龄: ");
+    int res = 0;
+    while ((res = scanf("%d", &(pc->data[index].age))) != 1 || pc->data[index].age < 0)
+    {
+        if (res == EOF || feof(stdin))
+        {
+            printf("\n检测到输入结束，操作中止。\n");
+            return;
+        }
+        printf("输入无效! 请输入合法的年龄: ");
+        ClearInputBuffer();
+    }
+    ClearInputBuffer();
+
+    printf("请输入新性别(最多9个字符): ");
+    if (scanf("%9s", pc->data[index].sex) == EOF || feof(stdin))
+    {
+        printf("\n检测到输入结束，操作中止。\n");
+        return;
+    }
+    ClearInputBuffer();
+
+    printf("请输入新电话(最多14个字符): ");
+    if (scanf("%14s", pc->data[index].tele) == EOF || feof(stdin))
+    {
+        printf("\n检测到输入结束，操作中止。\n");
+        return;
+    }
+    ClearInputBuffer();
+
+    printf("请输入新地址(最多29个字符): ");
+    if (scanf("%29s", pc->data[index].addr) == EOF || feof(stdin))
+    {
+        printf("\n检测到输入结束，操作中止。\n");
+        return;
+    }
+    ClearInputBuffer();
+
+    printf("--- 修改联系人成功 ---\n");
+}
+
+// 排序比较回调
+static int cmp_by_name(const void* e1, const void* e2)
+{
+    return strcmp(((const PeoInfo*)e1)->name, ((const PeoInfo*)e2)->name);
+}
+
+static int cmp_by_age(const void* e1, const void* e2)
+{
+    int a = ((const PeoInfo*)e1)->age;
+    int b = ((const PeoInfo*)e2)->age;
+    return (a > b) - (a < b); // 安全的比较方式，防止相减整型溢出
+}
+
+// 排序通讯录
+void SortContact(Contact* pc)
+{
+    if (pc == NULL)
+    {
+        return;
+    }
+    if (pc->sz < 2)
+    {
+        printf("人数少于2人, 无需排序.\n");
+        return;
+    }
+
+    printf("请选择排序规则:\n");
+    printf("1. 按姓名排序 (A-Z)\n");
+    printf("2. 按年龄排序 (从小到大)\n");
+    printf("请选择: ");
+
+    int choice = 0;
+    int res = 0;
+    while ((res = scanf("%d", &choice)) != 1 || (choice != 1 && choice != 2))
+    {
+        if (res == EOF || feof(stdin))
+        {
+            printf("\n检测到输入结束，操作中止。\n");
+            return;
+        }
+        printf("选择无效! 请重新选择(1或2): ");
+        ClearInputBuffer();
+    }
+    ClearInputBuffer();
+
+    if (choice == 1)
+    {
+        qsort(pc->data, pc->sz, sizeof(PeoInfo), cmp_by_name);
+        printf("--- 按姓名排序完成 ---\n");
+    }
+    else
+    {
+        qsort(pc->data, pc->sz, sizeof(PeoInfo), cmp_by_age);
+        printf("--- 按年龄排序完成 ---\n");
+    }
+
+    ShowContact(pc);
+}

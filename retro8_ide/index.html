@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Retro-8: Chip-8 Emulator & Assembler IDE</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- Top Header -->
+    <header>
+      <div class="logo-container">
+        <div class="logo-icon">8</div>
+        <h1>RETRO-8: Chip-8 虚拟 CPU 调试器与汇编 IDE</h1>
+      </div>
+      <div class="header-status">
+        <div class="status-badge">
+          <span>CPU 状态:</span>
+          <span id="cpu-status-indicator" class="status-indicator"></span>
+          <span id="cpu-status-text">已停止</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Grid Workspace -->
+    <div class="workspace-grid">
+      
+      <!-- COLUMN 1: Console Display & Controls -->
+      <section class="panel">
+        <div class="panel-header">
+          <h2><span>📺</span> 模拟显示与控制</h2>
+        </div>
+        <div class="panel-content">
+          <!-- CRT Screen -->
+          <div class="display-container">
+            <canvas id="screen" width="64" height="32"></canvas>
+          </div>
+
+          <!-- Quick Controls -->
+          <div class="controls-grid">
+            <button id="btn-play" class="btn btn-primary" title="运行/暂停 (Space)"><span>▶</span> 运行</button>
+            <button id="btn-step" class="btn btn-accent" title="单步调试 (F10)"><span>⏭</span> 单步</button>
+            <button id="btn-reset" class="btn" title="重置模拟器"><span>🔄</span> 重置</button>
+          </div>
+
+          <!-- Speed & Sound -->
+          <div class="speed-slider-container">
+            <div class="slider-label">
+              <span>运行速度 (Hz)</span>
+              <span id="speed-val">500 Hz</span>
+            </div>
+            <input type="range" id="speed-slider" class="slider" min="10" max="2000" value="500" step="10">
+          </div>
+
+          <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+            <button id="btn-mute" class="btn" style="flex: 1;"><span>🔊</span> 声音: 开启</button>
+            <select id="rom-select" class="btn" style="flex: 1.5; padding: 0.4rem;">
+              <option value="">-- 选择内置 ROM --</option>
+              <option value="ibm">IBM Logo (画图测试)</option>
+              <option value="maze">Maze (迷宫算法生成)</option>
+              <option value="pong">Pong (经典乒乓球)</option>
+            </select>
+          </div>
+
+          <!-- Drag and Drop Custom ROM -->
+          <div id="drop-zone" class="file-drop-area">
+            <span>📥</span>
+            <p>拖拽或点击载入本地 <b>.ch8</b> 游戏文件</p>
+            <input type="file" id="file-input" style="display: none;" accept=".ch8">
+          </div>
+
+          <!-- Virtual Keyboard Helper -->
+          <div style="margin-top: 1.25rem;">
+            <div class="slider-label" style="margin-bottom: 0.35rem;">
+              <span>键盘映射参考 (对应键盘键位)</span>
+            </div>
+            <div class="keypad-grid" id="virtual-keypad">
+              <div class="key-btn" data-key="0x1">1 (1)</div>
+              <div class="key-btn" data-key="0x2">2 (2)</div>
+              <div class="key-btn" data-key="0x3">3 (3)</div>
+              <div class="key-btn" data-key="0xC">C (4)</div>
+              <div class="key-btn" data-key="0x4">4 (Q)</div>
+              <div class="key-btn" data-key="0x5">5 (W)</div>
+              <div class="key-btn" data-key="0x6">6 (E)</div>
+              <div class="key-btn" data-key="0xD">D (R)</div>
+              <div class="key-btn" data-key="0x7">7 (A)</div>
+              <div class="key-btn" data-key="0x8">8 (S)</div>
+              <div class="key-btn" data-key="0x9">9 (D)</div>
+              <div class="key-btn" data-key="0xE">E (F)</div>
+              <div class="key-btn" data-key="0xA">A (Z)</div>
+              <div class="key-btn" data-key="0x0">0 (X)</div>
+              <div class="key-btn" data-key="0xB">B (C)</div>
+              <div class="key-btn" data-key="0xF">F (V)</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- COLUMN 2: CPU Diagnostics & Debugger -->
+      <section class="panel">
+        <div class="panel-header">
+          <h2><span>🛠</span> CPU 寄存器与内存诊断</h2>
+        </div>
+        <div class="panel-content" style="display: flex; flex-direction: column; gap: 1rem;">
+          
+          <!-- General Registers V0-VF -->
+          <div>
+            <div class="slider-label" style="margin-bottom: 0.5rem;"><span>通用寄存器 (V0 - VF)</span></div>
+            <div class="registers-grid" id="reg-v-container">
+              <!-- JS will populate these -->
+              <div class="register-card" id="reg-v0"><span class="reg-label">V0</span><span class="reg-val">00</span></div>
+              <div class="register-card" id="reg-v1"><span class="reg-label">V1</span><span class="reg-val">00</span></div>
+              <div class="register-card" id="reg-v2"><span class="reg-label">V2</span><span class="reg-val">00</span></div>
+              <div class="register-card" id="reg-v3"><span class="reg-label">V3</span><span class="reg-val">00</span></div>
+              <div class="register-card" id="reg-v4"><span class="reg-label">V4</span><span class="reg-val">00</span></div>
+              <div class="register-card" id="reg-v5"><span class="reg-label">V5</span><span class="reg-val">00</span></div>
+              <div class="register-card" id="reg-v6"><span class="reg-label">V6</span><span class="reg-val">00</span></div>
+              <div class="register-card" id="reg-v7"><span class="reg-label">V7</span><span class="reg-val">00</span></div>
+              <div class="register-card" id="reg-v8"><span class="reg-label">V8</span><span class="reg-val">00</span></div>
+              <div class="register-card" id="reg-v9"><span class="reg-label">V9</span><span class="reg-val">00</span></div>
+              <div class="register-card" id="reg-va"><span class="reg-label">VA</span><span class="reg-val">00</span></div>
+              <div class="register-card" id="reg-vb"><span class="reg-label">VB</span><span class="reg-val">00</span></div>
+              <div class="register-card" id="reg-vc"><span class="reg-label">VC</span><span class="reg-val">00</span></div>
+              <div class="register-card" id="reg-vd"><span class="reg-label">VD</span><span class="reg-val">00</span></div>
+              <div class="register-card" id="reg-ve"><span class="reg-label">VE</span><span class="reg-val">00</span></div>
+              <div class="register-card" id="reg-vf"><span class="reg-label">VF</span><span class="reg-val">00</span></div>
+            </div>
+          </div>
+
+          <!-- State Registers -->
+          <div class="registers-grid">
+            <div class="register-card" id="reg-i"><span class="reg-label">I (索引)</span><span class="reg-val">0000</span></div>
+            <div class="register-card" id="reg-pc"><span class="reg-label">PC (计数器)</span><span class="reg-val">0200</span></div>
+            <div class="register-card" id="reg-sp"><span class="reg-label">SP (堆栈)</span><span class="reg-val">00</span></div>
+            <div class="register-card" id="reg-timers"><span class="reg-label">DT / ST</span><span class="reg-val">00 / 00</span></div>
+          </div>
+
+          <!-- Live Disassembler -->
+          <div>
+            <div class="slider-label" style="margin-bottom: 0.5rem;"><span>实时指令反汇编 (PC 视轨)</span></div>
+            <div class="disassembler-list" id="disasm-container">
+              <!-- Will be updated dynamically by app.js -->
+              <div class="disasm-line active">
+                <span class="disasm-addr">0200</span>
+                <span class="disasm-code">0000</span>
+                <span class="disasm-inst">NOP</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Memory Visualizer -->
+          <div>
+            <div class="slider-label" style="margin-bottom: 0.5rem;"><span>4KB RAM 实时网格 (PC:紫, I:蓝)</span></div>
+            <div class="memory-viewer-wrapper">
+              <div class="memory-search-bar">
+                <input type="text" id="mem-search" class="memory-search-input" placeholder="输入十六进制地址跳转 (如: 0200)">
+              </div>
+              <div class="memory-grid" id="memory-grid-container">
+                <!-- Javascript will load memory cells -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- COLUMN 3: Assembler Editor & Code Log -->
+      <section class="panel">
+        <div class="panel-header">
+          <h2><span>✍</span> 汇编编辑器 & 编译器</h2>
+        </div>
+        <div class="panel-content">
+          <div class="editor-container">
+            <!-- Code Selector and template load -->
+            <div class="editor-toolbar">
+              <div class="select-wrapper">
+                <select id="template-select">
+                  <option value="">-- 选择汇编代码模板 --</option>
+                  <option value="drawBox">正方形移动碰撞 (基础图形与逻辑)</option>
+                  <option value="keyboard">键盘方向控制 (交互测试)</option>
+                </select>
+              </div>
+              <button id="btn-compile" class="btn btn-primary">编译并载入</button>
+            </div>
+
+            <!-- Assembly Text Area -->
+            <div class="editor-wrapper">
+              <textarea id="assembly-editor" placeholder="在此输入 Chip-8 汇编指令...&#10;例如:&#10;LD V0, 10&#10;LD V1, 15&#10;LD I, Sprite&#10;DRW V0, V1, 5&#10;JP Loop" spellcheck="false"></textarea>
+            </div>
+
+            <!-- Hex Export button -->
+            <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem;">
+              <button id="btn-export" class="btn btn-accent" style="flex: 1;">💾 导出二进制 (.ch8)</button>
+              <button id="btn-clear-code" class="btn" style="flex: 0.5;">清空</button>
+            </div>
+
+            <!-- Console log output -->
+            <div class="console-panel" id="console-log">
+              <div class="console-entry info">&gt; 编译器就绪。请编写代码或加载模板并点击“编译并载入”。</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Script Files -->
+  <script src="roms.js"></script>
+  <script src="emulator.js"></script>
+  <script src="assembler.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

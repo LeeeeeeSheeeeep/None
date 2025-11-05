@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro-8 | CHIP-8 Emulator & Assembler IDE</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="logo">
+                <h1>RETRO<span class="highlight">-8</span></h1>
+                <p class="subtitle">SYSTEM/CPU/EMULATOR</p>
+            </div>
+            <div class="controls">
+                <button id="btn-compile-run" class="btn primary">COMPILE & RUN</button>
+                <button id="btn-pause" class="btn">PAUSE</button>
+                <button id="btn-step" class="btn">STEP</button>
+                <button id="btn-reset" class="btn danger">RESET</button>
+                <div class="speed-control">
+                    <label for="speed-slider">CPU SPEED</label>
+                    <input type="range" id="speed-slider" min="1" max="1000" value="500">
+                </div>
+            </div>
+        </header>
+
+        <main class="app-grid">
+            <!-- Left Column: Code Editor & Assembler Output -->
+            <section class="panel editor-panel">
+                <div class="panel-header">
+                    <h2><span class="icon">/</span> SOURCE CODE (CHIP-8 ASM)</h2>
+                    <select id="rom-select" class="dropdown">
+                        <option value="test_draw">Test: Drawing</option>
+                        <option value="bouncing_pixel">Demo: Bouncing Pixel</option>
+                        <option value="maze">Demo: Random Maze</option>
+                    </select>
+                </div>
+                <div class="panel-content">
+                    <textarea id="code-editor" spellcheck="false"></textarea>
+                </div>
+                <div class="panel-footer">
+                    <div id="assembler-status" class="status-bar success">SYSTEM READY.</div>
+                </div>
+            </section>
+
+            <!-- Middle Column: Display & Keyboard -->
+            <section class="panel main-panel">
+                <div class="display-container">
+                    <canvas id="display" width="640" height="320"></canvas>
+                    <div class="scanlines"></div>
+                </div>
+                <div class="keyboard-hint">
+                    <h3>KEYPAD MAPPING</h3>
+                    <div class="keyboard-grid">
+                        <div class="key">1</div><div class="key">2</div><div class="key">3</div><div class="key">4</div>
+                        <div class="key">Q</div><div class="key">W</div><div class="key">E</div><div class="key">R</div>
+                        <div class="key">A</div><div class="key">S</div><div class="key">D</div><div class="key">F</div>
+                        <div class="key">Z</div><div class="key">X</div><div class="key">C</div><div class="key">V</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Column: Debugger (Registers, Timers, Memory) -->
+            <section class="panel debug-panel">
+                <div class="panel-header">
+                    <h2><span class="icon">/</span> CPU STATE</h2>
+                </div>
+                <div class="panel-content debug-content">
+                    <div class="registers-grid" id="registers-grid">
+                        <!-- Registers injected here by JS -->
+                    </div>
+                    <div class="system-registers">
+                        <div class="reg"><span class="label">PC</span><span class="value highlight" id="reg-pc">0x0200</span></div>
+                        <div class="reg"><span class="label">I</span><span class="value" id="reg-i">0x0000</span></div>
+                        <div class="reg"><span class="label">SP</span><span class="value" id="reg-sp">0x00</span></div>
+                        <div class="reg"><span class="label">DT</span><span class="value" id="reg-dt">0x00</span></div>
+                        <div class="reg"><span class="label">ST</span><span class="value" id="reg-st">0x00</span></div>
+                    </div>
+                    <div class="memory-viewer">
+                        <h3>MEMORY NEAR PC</h3>
+                        <div id="memory-view" class="memory-dump">
+                            <!-- Memory injected here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assembler.js"></script>
+    <script src="emulator.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

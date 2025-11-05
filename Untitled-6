@@ -1,0 +1,142 @@
+/* Untitled-6: test_advanced.c (高级版 - 测试入口文件) */
+#define _CRT_SECURE_NO_WARNINGS 1
+
+#include "contact_advanced.h"
+
+// 排序比较回调
+static int CompareByName(const void* e1, const void* e2)
+{
+    return strcmp(((const PeoInfo*)e1)->name, ((const PeoInfo*)e2)->name);
+}
+
+static int CompareByAge(const void* e1, const void* e2)
+{
+    int a = ((const PeoInfo*)e1)->age;
+    int b = ((const PeoInfo*)e2)->age;
+    return (a > b) - (a < b);
+}
+
+void menu(void)
+{
+    printf("\n*************************************************\n");
+    printf("*****       欢迎使用高级个人通讯录系统       *****\n");
+    printf("*************************************************\n");
+    printf("*****    1. 增加联系人     2. 删除联系人    *****\n");
+    printf("*****    3. 查找联系人     4. 修改联系人    *****\n");
+    printf("*****    5. 显示所有人员   6. 排序联系人    *****\n");
+    printf("*****    0. 退出通讯录系统                  *****\n");
+    printf("*************************************************\n");
+}
+
+int main(void)
+{
+    ContactStatus status;
+    Contact* con = CreateContact(&status);
+    if (con == NULL)
+    {
+        printf("系统启动失败: 内存初始化错误 (错误码: %d)\n", status);
+        return -1;
+    }
+
+    int input = 0;
+    do
+    {
+        menu();
+        printf("请选择操作 (0-6): ");
+        int res = scanf("%d", &input);
+        if (res == EOF || feof(stdin))
+        {
+            printf("\n检测到输入结束，系统安全退出。\n");
+            break;
+        }
+        else if (res != 1)
+        {
+            printf("输入无效! 请输入 0 到 6 之间的数字.\n");
+            ClearInputBuffer();
+            continue;
+        }
+
+        ContactStatus op_status = CONTACT_SUCCESS;
+        switch (input)
+        {
+            case OPT_ADD:
+                op_status = AddContact(con);
+                break;
+            case OPT_DEL:
+                op_status = DelContact(con);
+                break;
+            case OPT_SEARCH:
+                op_status = SearchContact(con);
+                break;
+            case OPT_MODIFY:
+                op_status = ModifyContact(con);
+                break;
+            case OPT_SHOW:
+                op_status = ShowContact(con);
+                break;
+            case OPT_SORT:
+                {
+                    printf("请选择排序规则:\n");
+                    printf("1. 按姓名排序 (A-Z)\n");
+                    printf("2. 按年龄排序 (从小到大)\n");
+                    printf("请选择: ");
+                    int choice = 0;
+                    int sort_res = 0;
+                    while ((sort_res = scanf("%d", &choice)) != 1 || (choice != 1 && choice != 2))
+                    {
+                        if (sort_res == EOF || feof(stdin))
+                        {
+                            op_status = CONTACT_ERR_EOF;
+                            break;
+                        }
+                        printf("选择无效! 请重新输入(1或2): ");
+                        ClearInputBuffer();
+                    }
+                    if (op_status == CONTACT_ERR_EOF)
+                    {
+                        break;
+                    }
+                    ClearInputBuffer();
+                    if (choice == 1)
+                    {
+                        op_status = SortContact(con, CompareByName);
+                        if (op_status == CONTACT_SUCCESS)
+                        {
+                            printf("--- 按姓名排序完成 ---\n");
+                        }
+                    }
+                    else
+                    {
+                        op_status = SortContact(con, CompareByAge);
+                        if (op_status == CONTACT_SUCCESS)
+                        {
+                            printf("--- 按年龄排序完成 ---\n");
+                        }
+                    }
+                }
+                break;
+            case OPT_EXIT:
+                printf("感谢使用, 系统已安全退出.\n");
+                break;
+            default:
+                printf("选择错误! 请重新选择.\n");
+                break;
+        }
+
+        if (op_status == CONTACT_ERR_MALLOC)
+        {
+            printf("\n系统遇到严重错误: 内存分配失败，程序即将退出。\n");
+            break;
+        }
+        else if (op_status == CONTACT_ERR_EOF)
+        {
+            printf("\n检测到输入流关闭，系统安全退出。\n");
+            break;
+        }
+    } while (input != OPT_EXIT);
+
+    DestroyContact(con);
+    con = NULL;
+
+    return 0;
+}
