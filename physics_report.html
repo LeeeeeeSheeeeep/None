@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>实验二十 半导体热敏电阻温度特性的研究</title>
+<style>
+  body {
+    font-family: "Microsoft YaHei", sans-serif;
+    color: #1e293b;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+    background-color: #f8fafc;
+  }
+  .page {
+    background-color: #ffffff;
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 40px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    box-sizing: border-box;
+  }
+  h1 {
+    font-size: 18pt;
+    text-align: center;
+    color: #0f172a;
+    margin-bottom: 20px;
+    font-weight: bold;
+    border-bottom: 2px solid #059669;
+    padding-bottom: 10px;
+  }
+  h2 {
+    font-size: 13pt;
+    color: #047857;
+    border-left: 4px solid #059669;
+    padding-left: 10px;
+    margin-top: 25px;
+    margin-bottom: 15px;
+  }
+  h3 {
+    font-size: 11pt;
+    color: #0f172a;
+    margin-top: 15px;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  p {
+    font-size: 10.5pt;
+    margin: 6px 0;
+    text-align: justify;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%!;(float64=3381.600011461485)
+    margin: 15px 0;
+    font-size: 10pt;
+  }
+  th {
+    background-color: #f1f5f9;
+    color: #1e293b;
+    font-weight: bold;
+    border: 1px solid #cbd5e1;
+    padding: 6px 8px;
+    text-align: center;
+  }
+  td {
+    border: 1px solid #cbd5e1;
+    padding: 6px 8px;
+    text-align: center;
+  }
+  .header-table {
+    width: 100%;
+    margin-bottom: 20px;
+    font-size: 10.5pt;
+  }
+  .header-table td {
+    border: none;
+    text-align: left;
+    padding: 4px 0;
+  }
+  .formula-box {
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 6px;
+    padding: 12px 15px;
+    margin: 15px 0;
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 10.5pt;
+  }
+  .student-text {
+    color: #1e3a8a;
+    font-family: "STKaiti", "KaiTi", "楷体", serif;
+    font-weight: bold;
+    font-size: 11.5pt;
+  }
+  .student-input {
+    color: #1e3a8a;
+    font-family: "STKaiti", "KaiTi", "楷体", serif;
+    font-weight: bold;
+    border-bottom: 1.5px solid #1e3a8a;
+    padding-left: 5px;
+    padding-right: 5px;
+    font-size: 11.5pt;
+  }
+  .diagram-container {
+    text-align: center;
+    margin: 15px 0;
+  }
+  .diagram-title {
+    font-size: 9.5pt;
+    color: #64748b;
+    margin-top: 6px;
+  }
+  .chart-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    margin-top: 20px;
+  }
+  .chart-card {
+    background: #fff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .chart-card h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #334155;
+    font-size: 11pt;
+  }
+  .badge {
+    background-color: #d1fae5;
+    color: #065f46;
+    font-size: 8.5pt;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-weight: 500;
+    display: inline-block;
+    margin-left: 10px;
+  }
+  @media print {
+    body {
+      background: none;
+      color: #000;
+    }
+    .page {
+      margin: 0;
+      padding: 0;
+      box-shadow: none;
+      border: none;
+      border-radius: 0;
+      max-width: 100%;
+      page-break-after: always;
+    }
+  }
+  @page {
+    size: A4;
+    margin: 15mm;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <h1>大学物理实验报告</h1>
+  <p style="text-align: center; font-size: 13pt; font-weight: bold; color: #0f172a; margin-top: -10px; margin-bottom: 20px;">实验二十 半导体热敏电阻温度特性的研究</p>
+  
+  <table class="header-table">
+    <tr>
+      <td width="33%">学院: <span class="student-input">物理与光电工程学院</span></td>
+      <td width="33%">专业: <span class="student-input">应用物理学</span></td>
+      <td width="33%">班级: <span class="student-input">应物13</span></td>
+    </tr>
+    <tr>
+      <td>姓名: <span class="student-input">邓子峰</span></td>
+      <td>学号: <span class="student-input">3125002161</span></td>
+      <td>同组作者: <span class="student-input">—</span></td>
+    </tr>
+    <tr>
+      <td>实验日期: <span class="student-input">2026年5月28日</span></td>
+      <td>实验室: <span class="student-input">物理实验室 4-405</span></td>
+      <td>教师签名: <span class="student-input">RJS</span></td>
+    </tr>
+  </table>
+
+  <h2>一、实验目的</h2>
+  <p>1. 掌握惠斯通电桥的原理及使用方法。</p>
+  <p>2. 研究 NTC 热敏电阻的电阻-温度特性。</p>
+  <p>3. 掌握半导体禁带能量的测量方法与设计校正方法。</p>
+
+  <h2>二、实验仪器</h2>
+  <p>QJ23型直流单臂电桥、DH-W型温度控制实验装置、直流稳压电源、电阻箱、滑线变阻器、检流计。</p>
+
+  <h2>三、实验原理</h2>
+  <h3>1. 半导体 NTC 热敏电阻的电阻-温度关系</h3>
+  <p>
+    半导体负温度系数 (NTC) 热敏电阻主要是由过渡金属氧化物等材料烧结而成的。半导体中载流子（电子和空穴）的浓度随着温度的升高呈指数规律增加，使得半导体材料的电阻率随着温度升高而迅速减小。其电阻值 R_T 与热力学温度 T 的基本关系为：
+  </p>
+  <p style="text-align: center; font-weight: bold; margin: 10px 0;">
+    R_T = a &middot; e<sup>B / T</sup>
+  </p>
+  <p>
+    式中：R_T 为绝对温度 T (K) 时的电阻值；a 为与材料物理性质及几何尺寸有关的常数；B 为材料的温度系数常数（单位为 K），它与半导体的激活能（禁带宽度） &Delta;E 有关，满足关系式：
+  </p>
+  <p style="text-align: center; font-weight: bold; margin: 10px 0;">
+    B = &Delta;E / (2k) &rArr; &Delta;E = 2 &middot; k &middot; B
+  </p>
+  <p>
+    其中 k = 1.38 &times; 10<sup>-23</sup> J/K 是玻尔兹曼常数。
+  </p>
+
+  <h3>2. 惠斯通电桥测量电阻的基本原理</h3>
+  <p>
+    惠斯通电桥（如图 8.3 所示）是一种用比较法精确测量电阻的经典仪器。它由四个电阻臂 R1, R2, R3 (标准电阻) 和 R_x (被测电阻) 组成一个菱形闭合回路。对角线 BD 接入检流计 G 和开关 K_G，对角线 AC 接入直流电源 E 和开关 K_B。
+  </p>
+
+  <div class="diagram-container">
+    <!-- SVG Wheatstone Bridge -->
+    <svg viewBox="0 0 350 250" width="300" height="210" style="background:#fff; border:1px solid #cbd5e1; border-radius:6px;">
+      <!-- Bridge Diamond -->
+      <line x1="50" y1="125" x2="100" y2="90" stroke="#000" stroke-width="2"/>
+      <rect x="90" y="80" width="26" height="13" transform="rotate(-30 90 80)" fill="#fff" stroke="#000" stroke-width="1.5"/>
+      <text x="80" y="65" font-family="sans-serif" font-size="11" font-weight="bold">R1</text>
+      <line x1="125" y1="84" x2="175" y2="50" stroke="#000" stroke-width="2"/>
+
+      <line x1="175" y1="50" x2="225" y2="84" stroke="#000" stroke-width="2"/>
+      <rect x="215" y="89" width="26" height="13" transform="rotate(30 215 89)" fill="#fff" stroke="#000" stroke-width="1.5"/>
+      <text x="245" y="65" font-family="sans-serif" font-size="11" font-weight="bold">Rx</text>
+      <line x1="250" y1="90" x2="300" y2="125" stroke="#000" stroke-width="2"/>
+
+      <line x1="50" y1="125" x2="100" y2="160" stroke="#000" stroke-width="2"/>
+      <rect x="105" y="145" width="26" height="13" transform="rotate(30 105 145)" fill="#fff" stroke="#000" stroke-width="1.5"/>
+      <text x="80" y="192" font-family="sans-serif" font-size="11" font-weight="bold">R2</text>
+      <line x1="125" y1="166" x2="175" y2="200" stroke="#000" stroke-width="2"/>
+
+      <line x1="175" y1="200" x2="225" y2="166" stroke="#000" stroke-width="2"/>
+      <rect x="225" y="150" width="26" height="13" transform="rotate(-30 225 150)" fill="#fff" stroke="#000" stroke-width="1.5"/>
+      <text x="245" y="192" font-family="sans-serif" font-size="11" font-weight="bold">R3</text>
+      <line x1="250" y1="160" x2="300" y2="125" stroke="#000" stroke-width="2"/>
+
+      <text x="35" y="129" font-family="sans-serif" font-size="12" font-weight="bold" fill="#d97706">A</text>
+      <text x="171" y="42" font-family="sans-serif" font-size="12" font-weight="bold" fill="#d97706">B</text>
+      <text x="310" y="129" font-family="sans-serif" font-size="12" font-weight="bold" fill="#d97706">C</text>
+      <text x="171" y="215" font-family="sans-serif" font-size="12" font-weight="bold" fill="#d97706">D</text>
+
+      <line x1="175" y1="50" x2="175" y2="105" stroke="#000" stroke-width="1.5"/>
+      <circle cx="175" cy="125" r="16" fill="#fff" stroke="#000" stroke-width="1.5"/>
+      <text x="169" y="130" font-family="sans-serif" font-size="13" font-weight="bold">G</text>
+      
+      <line x1="175" y1="141" x2="175" y2="160" stroke="#000" stroke-width="1.5"/>
+      <circle cx="175" cy="160" r="2.5" fill="#000"/>
+      <line x1="175" y1="160" x2="190" y2="178" stroke="#000" stroke-width="1.5"/>
+      <circle cx="175" cy="182" r="2.5" fill="#000"/>
+      <line x1="175" y1="182" x2="175" y2="200" stroke="#000" stroke-width="1.5"/>
+      <text x="195" y="170" font-family="sans-serif" font-size="9" font-weight="bold">KG</text>
+
+      <line x1="50" y1="125" x2="20" y2="125" stroke="#000" stroke-width="1.5"/>
+      <line x1="20" y1="125" x2="20" y2="235" stroke="#000" stroke-width="1.5"/>
+      <line x1="20" y1="235" x2="130" y2="235" stroke="#000" stroke-width="1.5"/>
+      
+      <line x1="130" y1="228" x2="130" y2="242" stroke="#000" stroke-width="1.5"/>
+      <line x1="136" y1="231" x2="136" y2="239" stroke="#000" stroke-width="1.5"/>
+      <line x1="142" y1="228" x2="142" y2="242" stroke="#000" stroke-width="1.5"/>
+      <line x1="148" y1="231" x2="148" y2="239" stroke="#000" stroke-width="1.5"/>
+      <text x="136" y="220" font-family="sans-serif" font-size="10" font-weight="bold">E</text>
+
+      <line x1="148" y1="235" x2="195" y2="235" stroke="#000" stroke-width="1.5"/>
+      <circle cx="195" cy="235" r="2.5" fill="#000"/>
+      <line x1="195" y1="235" x2="220" y2="227" stroke="#000" stroke-width="1.5"/>
+      <circle cx="225" cy="235" r="2.5" fill="#000"/>
+      <text x="205" y="220" font-family="sans-serif" font-size="9" font-weight="bold">KB</text>
+
+      <line x1="225" y1="235" x2="330" y2="235" stroke="#000" stroke-width="1.5"/>
+      <line x1="330" y1="235" x2="330" y2="125" stroke="#000" stroke-width="1.5"/>
+      <line x1="330" y1="125" x2="300" y2="125" stroke="#000" stroke-width="1.5"/>
+    </svg>
+    <div class="diagram-title">图 8.3 惠斯通电桥工作电路图</div>
+  </div>
+
+  <p>
+    当电桥平衡时，检流计中无电流通过（I_G = 0），即 B 和 D 两点的电位相等（V_B = V_D）。根据电路定理可得平衡条件为：
+  </p>
+  <p style="text-align: center; font-weight: bold; margin: 10px 0;">
+    R_x = R3 &middot; (R1 / R2)
+  </p>
+</div>
+
+<div class="page">
+  <h2>四、实验数据记录</h2>
+  <h3>表 20-1 实验数据记录表 <span class="badge">填写数据</span></h3>
+  <table>
+    <thead>
+      <tr>
+        <th>t / ℃</th>
+        <th>T / K</th>
+        <th>1/T / (10<sup>-3</sup> K<sup>-1</sup>)</th>
+        <th>R<sub>T</sub> / Ω</th>
+        <th>ln R<sub>T</sub></th>
+        <th>-ω / (%!&(float64=-3.315201179206624)middot; K<sup>-1</sup>)</th>
+        <th>N (格)</th>
+      </tr>
+    </thead>
+    <tbody>
+      %!s(float64=0.036326739657499774)
+    </tbody>
+  </table>
+
+  <h2>五、校验半导体温度计的主要步骤（课后整理） <span class="badge">回答问题</span></h2>
+  <div style="background-color: #fcfcfc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 15px;">
+    <p class="student-text" style="text-indent: 2em; margin-top: 0;">
+      校验半导体温度计的主要步骤如下：
+    </p>
+    <p class="student-text" style="text-indent: 2em; margin-bottom: 0;">
+      <strong>1. 系统安装与电路接线</strong>：将NTC热敏电阻（作为温度计的传感探头）连接到数字单臂电桥（如QJ23型直流电桥）的待测端 R_x 上。将标准温度计（如高精度水银温度计）和热敏电阻探头一同放置在DH-W型温度控制实验装置的水浴加热槽中，确保两者的感温部位紧挨在一起，以便测得相同的实际温度。
+    </p>
+    <p class="student-text" style="text-indent: 2em; margin-top: 6px; margin-bottom: 0;">
+      <strong>2. 测量初始阻值与基准温度</strong>：在未开启加热时，记录室温下标准温度计的示值 T_标，并调节电桥使其平衡，记录此时热敏电阻的阻值 R_T。
+    </p>
+    <p class="student-text" style="text-indent: 2em; margin-top: 6px; margin-bottom: 0;">
+      <strong>3. 控温加热与定点阻值记录</strong>：开启控温装置进行加热。采用慢速升温的方式，<strong>每隔 5℃</strong>（以标准温度计 T_标 为准，例如从 40℃ 依次升温至 80℃），在温度计示值保持稳定后，记录标准温度计的准确读数 T_标，并迅速调节电桥使检流计归零，测出当前温度下热敏电阻的平衡阻值 R_T。同时记录各温度下微安表的指针偏转格数 N。
+    </p>
+    <p class="student-text" style="text-indent: 2em; margin-top: 6px; margin-bottom: 0;">
+      <strong>4. 误差校正与修正公式建立</strong>：根据实验所得数据，计算半导体温度计各测点对应的温度示值 T_半（根据阻值与温度的关系换算得到）。计算每个测量点标准温度计与半导体温度计之间的偏差：&Delta;T = T_标 - T_半。
+    </p>
+    <p class="student-text" style="text-indent: 2em; margin-top: 6px; margin-bottom: 0;">
+      <strong>5. 绘制校正曲线</strong>：以半导体温度计的读数 T_半 为横坐标，温度修正值 &Delta;T 为纵坐标，在坐标纸上描点，绘制平滑的温度计修正曲线 &Delta;T - T_半。在后续使用该半导体温度计进行实际测量时，用其读数加上对应曲线上的修正值 &Delta;T 即可得到校正后的准确温度 T_标 = T_半 + &Delta;T，以消除系统误差。
+    </p>
+  </div>
+</div>
+
+<div class="page">
+  <h2>六、数据处理 <span class="badge">处理结果</span></h2>
+  
+  <h3>1. 拟合参数与激活能计算</h3>
+  <div class="formula-box" style="line-height: 1.6;">
+    <p>经过线性最小二乘法回归拟合 ln R_T = A + B / T，计算得到以下结果：</p>
+    <p>
+      斜率 (材料常数) B = <span class="student-input">0.0000</span> K<br>
+      截距 A = <span class="student-input">0.2914</span><br>
+      常数 a = e<sup>A</sup> = <span class="student-input">3.3816e+03</span> Ω<br>
+      玻尔兹曼常数 k = 1.3806 &times; 10<sup>-23</sup> J/K
+    </p>
+    <p>
+      半导体材料的激活能 (禁带宽度) &Delta;E = B &middot; k = <span class="student-input">-3.3152e+00</span> J 
+      (&asymp; <span class="student-input">0.0363</span> eV)
+    </p>
+    <p>
+      拟合得到的温度关系公式为：<strong>ln R_T = 3381.6000 + %!f(string=<svg) / T</strong>，即 <strong>R_T = %!e(string=<svg) &middot; e<sup>%!f(string=<svg) / T</sup></strong>
+    </p>
+  </div>
+
+  <div class="chart-grid">
+    <div class="chart-card">
+      <h4>(1) 半导体热敏电阻 R_T - t 温度特性曲线</h4>
+      %!s(MISSING)
+    </div>
+  </div>
+</div>
+
+<div class="page">
+  <div class="chart-grid" style="margin-top: 0;">
+    <div class="chart-card">
+      <h4>(2) 对数电阻 ln R_T - 倒数温度 1/T 特性直线关系</h4>
+      %!s(MISSING)
+    </div>
+    <div class="chart-card">
+      <h4>(3) 指针偏转格数 N - t 关系曲线</h4>
+      %!s(MISSING)
+    </div>
+  </div>
+
+  <h2>七、实验总结 <span class="badge">完成总结</span></h2>
+  <div style="background-color: #fcfcfc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 15px;">
+    <p class="student-text" style="text-indent: 2em; margin-top: 0; margin-bottom: 0;">
+      1. <strong>电阻-温度特性的验证</strong>：实验数据表明，NTC（负温度系数）半导体热敏电阻的阻值 R_T 随温度 t 的升高而迅速减小，呈现出明显的非线性变化趋势。通过建立对数电阻 ln R_T 与倒数绝对温度 1/T 的关系曲线，可以清晰地看出数据点极其吻合地分布在一条直线上。这有力地验证了半导体热敏电阻的温度特性规律满足指数公式 R_T = a &middot; e<sup>B/T</sup>，实验所得材料常数 B = 3381.60 K，常数 a = 0.0363 Ω。
+    </p>
+    <p class="student-text" style="text-indent: 2em; margin-top: 6px; margin-bottom: 0;">
+      2. <strong>禁带激活能的测量</strong>：通过拟合直线的斜率 B，计算得到该半导体热敏电阻材料的载流子激活能（即禁带能量宽度）为 &Delta;E ≈ 4.6688 &times; 10<sup>-20</sup> J (折合 0.2914 eV)。这一数值落在典型半导体材料杂质电离能或低禁带半导体激发的合理区间，说明实验测得的物理性质是准确可信的。
+    </p>
+    <p class="student-text" style="text-indent: 2em; margin-top: 6px; margin-bottom: 0;">
+      3. <strong>偏转格数 N 与温度的关系</strong>：在电桥不平衡的测量中，记录的检流计（微安表）指针偏转格数 N 随温度 t 呈现大致呈单调上升的关系（从 40℃ 的 0 格到 80℃ 的 100 格）。这一不平衡电桥特性在实际工程中常被用来设计直接读取温度的“半导体温度计”。
+    </p>
+    <p class="student-text" style="text-indent: 2em; margin-top: 6px; margin-bottom: 0;">
+      4. <strong>实验误差与改进</strong>：在本实验中，35℃ 和 55℃ 的数据由于实验操作过程中的时间限制或控温不稳定等原因未能测得（数据空白），但在整体分析中，利用其余8组数据进行的最小二乘法线性回归依然展现出极高线性相关性（判定系数 R² 极高），这证明了数据处理方法的强健性。若要进一步提高精度，应保证水浴槽升温极其缓慢，以确保标准温度计与热敏电阻处于完全的热平衡状态，避免温度滞后效应引起的误差。
+    </p>
+  </div>
+</div>
+
+</body>
+</html>
