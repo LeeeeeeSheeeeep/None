@@ -118,10 +118,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 5. Visual Rendering Engine
   function drawDisplay() {
-    ctx.fillStyle = '#020305'; // Dark background
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    const activeColor = '0, 255, 196'; // Cyan-green rgb
+    const imgData = ctx.createImageData(64, 32);
+    const data = imgData.data;
 
     for (let y = 0; y < 32; y++) {
       for (let x = 0; x < 64; x++) {
@@ -134,12 +132,25 @@ document.addEventListener('DOMContentLoaded', () => {
           pixelIntensity[idx] = Math.max(0, pixelIntensity[idx] - 0.08); // Decays
         }
 
-        if (pixelIntensity[idx] > 0) {
-          ctx.fillStyle = `rgba(${activeColor}, ${pixelIntensity[idx]})`;
-          ctx.fillRect(x, y, 1, 1);
+        const intensity = pixelIntensity[idx];
+        const pIdx = idx * 4;
+        
+        if (intensity > 0) {
+          data[pIdx] = 0;     // R
+          data[pIdx + 1] = 255; // G
+          data[pIdx + 2] = 196; // B
+          data[pIdx + 3] = intensity * 255; // A
+        } else {
+          // Background color #020305
+          data[pIdx] = 2;
+          data[pIdx + 1] = 3;
+          data[pIdx + 2] = 5;
+          data[pIdx + 3] = 255;
         }
       }
     }
+    
+    ctx.putImageData(imgData, 0, 0);
   }
 
   // 6. Game loop driver
@@ -266,7 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
     for (let addr = startPC; addr < Math.min(4096, emulator.pc + 10); addr += 2) {
       const isCurrent = addr === emulator.pc;
       const op = (emulator.memory[addr] << 8) | emulator.memory[addr + 1];
-      const decoded = disassembleOpcode(op, addr);
+      const decoded = disassembleOpcode(op);
       
       const lineDiv = document.createElement('div');
       lineDiv.className = `disasm-line ${isCurrent ? 'active' : ''}`;
@@ -512,7 +523,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // 13. Minimal Disassembler implementation for debugging panel
-  function disassembleOpcode(op, address) {
+  function disassembleOpcode(op) {
     if (op === 0) return 'NOP (0x0000)';
 
     const nnn = op & 0x0FFF;

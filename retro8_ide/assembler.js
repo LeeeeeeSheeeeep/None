@@ -188,7 +188,7 @@ Sprite:
     for (const parsed of parsedLines) {
       const { lineNum, address, mnemonic, args, original } = parsed;
       try {
-        const op = this.compileOpcode(mnemonic, args, address, labels);
+        const op = this.compileOpcode(mnemonic, args, labels);
         if (op === null) {
           errors.push(`Line ${lineNum}: Syntax error in instruction: "${original}"`);
         } else {
@@ -254,7 +254,7 @@ Sprite:
   }
 
   // Compiles standard mnemonics into CHIP-8 hexadecimal words
-  compileOpcode(mnemonic, args, currentAddress, labels) {
+  compileOpcode(mnemonic, args, labels) {
     const len = args.length;
 
     switch (mnemonic) {

@@ -264,14 +264,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Keyboard Input
-    const keyElements = document.querySelectorAll('.key');
-    const updateKeyUI = (keyIndex, pressed) => {
-        if (keyIndex !== undefined && keyIndex >= 0 && keyIndex < 16) {
-            // map hex value to DOM index
-            const domMap = [13,0,1,2, 4,5,6,8, 9,10,12,14, 3,7,11,15]; // mapping for UI glow
-            // It's just a visual flair, not perfectly mapped to physical keys in the array for simplicity
-        }
-    };
 
     window.addEventListener('keydown', (e) => {
         const key = e.key.toLowerCase();

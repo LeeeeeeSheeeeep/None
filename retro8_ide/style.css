@@ -195,10 +195,6 @@ header h1 {
   gap: 0.5rem;
 }
 
-.panel-header h2 i {
-  color: var(--neon-cyan);
-}
-
 .panel-content {
   padding: 1.25rem;
   flex: 1;
@@ -353,12 +349,6 @@ header h1 {
 .file-drop-area:hover, .file-drop-area.dragover {
   border-color: var(--neon-cyan);
   background: rgba(0, 210, 255, 0.03);
-}
-
-.file-drop-area i {
-  font-size: 1.5rem;
-  color: var(--neon-cyan);
-  margin-bottom: 0.5rem;
 }
 
 .file-drop-area p {

@@ -167,7 +167,7 @@ class Chip8Emulator {
                         this.v[x] = sum & 0xFF;
                         break;
                     case 0x5:
-                        this.v[0xF] = this.v[x] > this.v[y] ? 1 : 0;
+                        this.v[0xF] = this.v[x] >= this.v[y] ? 1 : 0;
                         this.v[x] = (this.v[x] - this.v[y]) & 0xFF;
                         break;
                     case 0x6:
@@ -175,7 +175,7 @@ class Chip8Emulator {
                         this.v[x] >>= 1;
                         break;
                     case 0x7:
-                        this.v[0xF] = this.v[y] > this.v[x] ? 1 : 0;
+                        this.v[0xF] = this.v[y] >= this.v[x] ? 1 : 0;
                         this.v[x] = (this.v[y] - this.v[x]) & 0xFF;
                         break;
                     case 0xE:
@@ -194,7 +194,7 @@ class Chip8Emulator {
                 this.pc = nnn + this.v[0];
                 break;
             case 0xC000: // RND Vx, byte
-                this.v[x] = Math.floor(Math.random() * 0xFF) & nn;
+                this.v[x] = Math.floor(Math.random() * 0x100) & nn;
                 break;
             case 0xD000: // DRW Vx, Vy, nibble
                 const vx = this.v[x] % 64;
@@ -222,10 +222,10 @@ class Chip8Emulator {
             case 0xE000:
                 switch (nn) {
                     case 0x9E:
-                        if (this.keys[this.v[x]]) this.pc += 2;
+                        if (this.keys[this.v[x] & 0xF]) this.pc += 2;
                         break;
                     case 0xA1:
-                        if (!this.keys[this.v[x]]) this.pc += 2;
+                        if (!this.keys[this.v[x] & 0xF]) this.pc += 2;
                         break;
                 }
                 break;
@@ -246,7 +246,7 @@ class Chip8Emulator {
                     case 0x15: this.delayTimer = this.v[x]; break;
                     case 0x18: this.soundTimer = this.v[x]; break;
                     case 0x1E: this.i += this.v[x]; break;
-                    case 0x29: this.i = 0x50 + (this.v[x] * 5); break;
+                    case 0x29: this.i = 0x50 + ((this.v[x] & 0x0F) * 5); break;
                     case 0x33:
                         this.memory[this.i] = Math.floor(this.v[x] / 100);
                         this.memory[this.i + 1] = Math.floor((this.v[x] % 100) / 10);

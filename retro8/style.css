@@ -253,13 +253,6 @@ body {
     transition: all 0.1s;
 }
 
-.key.active {
-    background: var(--accent);
-    color: var(--bg-color);
-    box-shadow: 0 0 15px rgba(102, 252, 241, 0.5);
-    transform: scale(0.95);
-}
-
 /* Debugger */
 .debug-content {
     padding: 1rem;

@@ -50,9 +50,12 @@ void get_query_param(const char* path, const char* param_name, char* dest, int m
         temp[i] = found[i];
         i++;
     }
+    if (i >= max_len - 1) i = max_len - 2; // Enforce caller's buffer limit
     temp[i] = '\0';
     
     url_decode(temp, dest);
+    // Enforce max_len on decoded output as well
+    dest[max_len - 1] = '\0';
 }
 
 // Get Content-Type MIME description based on file extension
@@ -72,6 +75,16 @@ const char* get_content_type(const char* filepath) {
     if (_stricmp(ext, ".json") == 0) return "application/json";
     
     return "application/octet-stream";
+}
+
+// Security: Validate filename to prevent path traversal attacks
+int is_safe_filename(const char* name) {
+    if (!name || name[0] == '\0') return 0;
+    if (strstr(name, "..") != NULL) return 0;
+    if (strchr(name, '/') != NULL) return 0;
+    if (strchr(name, '\\') != NULL) return 0;
+    if (name[0] == '~') return 0;
+    return 1;
 }
 
 // Read storage directory and compile files inside into a JSON response
@@ -277,6 +290,12 @@ int main() {
                 char decoded_filename[512] = {0};
                 url_decode(path + 9, raw_filename);
                 
+                if (!is_safe_filename(raw_filename)) {
+                    send_text_response(client_socket, "403 Forbidden", "text/plain", "Invalid filename.");
+                    closesocket(client_socket);
+                    continue;
+                }
+                
                 char local_path[1024];
                 sprintf(local_path, "storage\\%s", raw_filename);
                 
@@ -292,8 +311,8 @@ int main() {
                 char filename[512] = {0};
                 get_query_param(full_path, "name", filename, 511);
                 
-                if (strlen(filename) == 0) {
-                    send_text_response(client_socket, "400 Bad Request", "application/json", "{\"success\":false,\"error\":\"Name parameter missing\"}");
+                if (strlen(filename) == 0 || !is_safe_filename(filename)) {
+                    send_text_response(client_socket, "400 Bad Request", "application/json", "{\"success\":false,\"error\":\"Invalid or missing filename\"}");
                     closesocket(client_socket);
                     continue;
                 }
@@ -355,8 +374,8 @@ int main() {
                 char filename[512] = {0};
                 get_query_param(full_path, "name", filename, 511);
                 
-                if (strlen(filename) == 0) {
-                    send_text_response(client_socket, "400 Bad Request", "application/json", "{\"success\":false,\"error\":\"Name parameter missing\"}");
+                if (strlen(filename) == 0 || !is_safe_filename(filename)) {
+                    send_text_response(client_socket, "400 Bad Request", "application/json", "{\"success\":false,\"error\":\"Invalid or missing filename\"}");
                     closesocket(client_socket);
                     continue;
                 }
@@ -375,6 +394,12 @@ int main() {
             else if (strcmp(path, "/api/save") == 0) {
                 char filename[512] = {0};
                 get_query_param(full_path, "name", filename, 511);
+                
+                if (strlen(filename) == 0 || !is_safe_filename(filename)) {
+                    send_text_response(client_socket, "400 Bad Request", "application/json", "{\"success\":false}");
+                    closesocket(client_socket);
+                    continue;
+                }
                 
                 long long content_length = 0;
                 const char* cl_header = strstr(request_buffer, "Content-Length:");

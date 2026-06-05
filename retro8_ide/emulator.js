@@ -111,7 +111,7 @@ class Chip8 {
       this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     }
     if (this.audioCtx.state === 'suspended') {
-      this.audioCtx.resume();
+      this.audioCtx.resume().catch(e => console.warn(e));
     }
     
     if (!this.oscillator) {
@@ -364,7 +364,7 @@ class Chip8 {
       case 0xE000:
         switch (kk) {
           case 0x9E: // SKP Vx - Skip next if key corresponding to Vx is pressed
-            if (this.keys[this.v[x]] === 1) {
+            if (this.keys[this.v[x] & 0xF] === 1) {
               this.pc += 2;
               desc = `SKP V${x.toString(16).toUpperCase()} (Skip: Key 0x${this.v[x].toString(16).toUpperCase()} pressed)`;
             } else {
@@ -372,7 +372,7 @@ class Chip8 {
             }
             break;
           case 0xA1: // SKNP Vx - Skip next if key corresponding to Vx is not pressed
-            if (this.keys[this.v[x]] !== 1) {
+            if (this.keys[this.v[x] & 0xF] !== 1) {
               this.pc += 2;
               desc = `SKNP V${x.toString(16).toUpperCase()} (Skip: Key 0x${this.v[x].toString(16).toUpperCase()} up)`;
             } else {

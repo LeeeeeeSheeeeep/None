@@ -198,36 +198,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 4. File Upload (using XHR to track stream progress)
-  function uploadFile(file) {
-    uploadProgressOverlay.style.display = 'flex';
-    
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', `/api/upload?name=${encodeURIComponent(file.name)}`, true);
-    
-    xhr.upload.onprogress = function(e) {
-      if (e.lengthComputable) {
-        const pct = Math.round((e.loaded / e.total) * 100);
-        uploadProgressFill.style.width = pct + '%';
-        uploadProgressText.textContent = `正在传输 [${file.name}]... ${pct}%`;
-      }
-    };
-    
-    xhr.onload = function() {
-      uploadProgressOverlay.style.display = 'none';
-      if (xhr.status === 200) {
-        fetchFiles();
-      } else {
-        alert('文件上传失败，服务器返回状态: ' + xhr.status);
-      }
-    };
-    
-    xhr.onerror = function() {
-      uploadProgressOverlay.style.display = 'none';
-      alert('上传请求发生网络错误，请确认服务器在线！');
-    };
-    
-    xhr.send(file); // Post raw binary payload
-  }
 
   // Trigger file uploads sequentially
   function handleFilesUpload(filesList) {
@@ -424,7 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
     currentEditingFilename = '';
   }
   btnCloseEditor.addEventListener('click', closeTextEditor);
-  btnSaveEditor.addEventListener('keydown', (e) => {
+  textEditorTextarea.addEventListener('keydown', (e) => {
     // Save on Ctrl+S
     if ((e.ctrlKey || e.metaKey) && e.key === 's') {
       e.preventDefault();
